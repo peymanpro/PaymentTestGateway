@@ -1,0 +1,57 @@
+@page "/pay/{PaymentId:guid}"
+
+<PageTitle>Payment Test Gateway</PageTitle>
+
+<div class="payment-container">
+
+    <div class="payment-card">
+
+        <div class="payment-header">
+            <h2>Payment Test Gateway</h2>
+            <p>Sandbox Environment</p>
+        </div>
+
+        <div class="payment-body">
+
+            <div class="info-row">
+                <span>Payment Id</span>
+                <strong>@PaymentId</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Amount</span>
+                <strong>250,000 Toman</strong>
+            </div>
+
+            <div class="info-row">
+                <span>Description</span>
+                <strong>Test Payment</strong>
+            </div>
+
+        </div>
+
+        <div class="payment-actions">
+
+            <button class="btn btn-success">
+                Successful Payment
+            </button>
+
+            <button class="btn btn-danger">
+                Failed Payment
+            </button>
+
+            <button class="btn btn-outline-secondary">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code
+{
+    [Parameter]
+    public Guid PaymentId { get; set; }
+}
