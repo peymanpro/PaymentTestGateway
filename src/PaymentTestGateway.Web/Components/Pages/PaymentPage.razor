@@ -1,9 +1,21 @@
 @page "/pay/{PaymentId:guid}"
 
+@using PaymentTestGateway.Application.Interfaces
+@using PaymentTestGateway.Domain.Entities
+
+@inject IPaymentService PaymentService
+
 <PageTitle>Payment Test Gateway</PageTitle>
 
 <div class="payment-container">
 
+@if (Payment is null)
+{
+    <div class="alert alert-danger">
+        Payment not found.
+    </div>
+    return;
+}
     <div class="payment-card">
 
         <div class="payment-header">
@@ -20,12 +32,12 @@
 
             <div class="info-row">
                 <span>Amount</span>
-                <strong>250,000 Toman</strong>
+                <strong>$ @(Payment?.Amount ?? 0)</strong>
             </div>
 
             <div class="info-row">
                 <span>Description</span>
-                <strong>Test Payment</strong>
+                <strong>@Payment?.Description</strong>
             </div>
 
         </div>
@@ -54,4 +66,11 @@
 {
     [Parameter]
     public Guid PaymentId { get; set; }
+
+     private PaymentTransaction? Payment;
+
+    protected override void OnInitialized()
+    {
+        Payment = PaymentService.GetById(PaymentId);
+    }
 }

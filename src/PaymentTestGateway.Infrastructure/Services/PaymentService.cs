@@ -29,4 +29,11 @@ public class PaymentService : IPaymentService
             PaymentUrl = $"/pay/{payment.Id}"
         };
     }
+
+    public PaymentTransaction? GetById(Guid paymentId)
+    {
+        return Payments.FirstOrDefault(x => x.Id == paymentId);
+    }
+
+
 }
