@@ -51,4 +51,15 @@ public class PaymentController(IPaymentService paymentService) : ControllerBase
         return Ok();
     }
 
+    [HttpPost("verify")]
+    public ActionResult<VerifyPaymentResponse> Verify(VerifyPaymentRequest request)
+    {
+        var result = paymentService.Verify(request);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
 }

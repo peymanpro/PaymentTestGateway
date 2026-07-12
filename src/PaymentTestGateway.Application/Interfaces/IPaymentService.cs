@@ -9,4 +9,5 @@ public interface IPaymentService
     CreatePaymentResponse Create(CreatePaymentRequest request);
     PaymentTransaction? GetById(Guid paymentId);
     bool UpdateStatus(Guid paymentId, PaymentStatus status);
+    VerifyPaymentResponse? Verify(VerifyPaymentRequest request);
 }

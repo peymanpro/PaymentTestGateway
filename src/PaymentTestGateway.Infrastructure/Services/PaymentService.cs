@@ -44,6 +44,37 @@ public class PaymentService : IPaymentService
 
         payment.Status = status;
 
+        if (status == PaymentStatus.Successful)
+        {
+            payment.PaidAt ??= DateTime.UtcNow;
+
+            payment.ReferenceNumber ??= GenerateReferenceNumber();
+        }
+
         return true;
+    }
+
+    public VerifyPaymentResponse? Verify(VerifyPaymentRequest request)
+    {
+        var payment = GetById(request.PaymentId);
+
+        if (payment is null)
+            return null;
+
+        return new VerifyPaymentResponse
+        {
+            PaymentId = payment.Id,
+            Status = payment.Status,
+            Amount = payment.Amount,
+            ReferenceNumber = payment.ReferenceNumber,
+            PaidAt = payment.PaidAt
+        };
+    }
+
+    private static string GenerateReferenceNumber()
+    {
+        return Random.Shared
+            .NextInt64(100_000_000_000, 999_999_999_999)
+            .ToString();
     }
 }
