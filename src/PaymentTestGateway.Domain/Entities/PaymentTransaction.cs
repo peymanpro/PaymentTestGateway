@@ -1,3 +1,4 @@
+
 using PaymentTestGateway.Domain.Enums;
 
 namespace PaymentTestGateway.Domain.Entities;

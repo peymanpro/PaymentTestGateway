@@ -1,4 +1,7 @@
 @page "/payment-result/{PaymentId:guid}"
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
 
 @using PaymentTestGateway.Application.Interfaces
 @using PaymentTestGateway.Domain.Entities
@@ -61,6 +64,17 @@ else
 
             <p>@Payment.Description</p>
 
+            @if (!string.IsNullOrWhiteSpace(Payment.CallbackUrl))
+            {
+                <hr />
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary" @onclick="ReturnToApplication">
+                        Return to Application
+                    </button>
+                </div>
+            }
+
         </div>
 
     </div>
@@ -76,5 +90,12 @@ else
     protected override void OnInitialized()
     {
         Payment = PaymentService.GetById(PaymentId);
+    }
+
+    private void ReturnToApplication()
+    {
+        Navigation.NavigateTo(
+            $"{Payment!.CallbackUrl}?paymentId={Payment.Id}",
+            forceLoad: true);
     }
 }
