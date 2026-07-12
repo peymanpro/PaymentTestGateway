@@ -35,5 +35,15 @@ public class PaymentService : IPaymentService
         return Payments.FirstOrDefault(x => x.Id == paymentId);
     }
 
+    public bool UpdateStatus(Guid paymentId, PaymentStatus status)
+    {
+        var payment = Payments.FirstOrDefault(x => x.Id == paymentId);
 
+        if (payment is null)
+            return false;
+
+        payment.Status = status;
+
+        return true;
+    }
 }
