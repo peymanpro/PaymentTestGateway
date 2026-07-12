@@ -1,7 +1,11 @@
 @page "/pay/{PaymentId:guid}"
-
+@rendermode InteractiveServer
 @using PaymentTestGateway.Application.Interfaces
 @using PaymentTestGateway.Domain.Entities
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
 
 @inject IPaymentService PaymentService
 
@@ -9,13 +13,24 @@
 
 <div class="payment-container">
 
-@if (Payment is null)
-{
-    <div class="alert alert-danger">
-        Payment not found.
-    </div>
-    return;
-}
+    @if (Payment is null)
+    {
+        <div class="alert alert-danger">
+            Payment not found.
+        </div>
+    }
+    else
+    {
+        <div class="payment-container">
+
+            <div class="payment-card">
+
+                ...
+
+            </div>
+
+        </div>
+    }
     <div class="payment-card">
 
         <div class="payment-header">
@@ -44,15 +59,15 @@
 
         <div class="payment-actions">
 
-            <button class="btn btn-success">
+            <button class="btn btn-success" @onclick="SuccessPayment">
                 Successful Payment
             </button>
 
-            <button class="btn btn-danger">
+            <button class="btn btn-danger" @onclick="FailedPayment">
                 Failed Payment
             </button>
 
-            <button class="btn btn-outline-secondary">
+            <button class="btn btn-outline-secondary" @onclick="CancelPayment">
                 Cancel
             </button>
 
@@ -67,10 +82,46 @@
     [Parameter]
     public Guid PaymentId { get; set; }
 
-     private PaymentTransaction? Payment;
+    private PaymentTransaction? Payment;
 
     protected override void OnInitialized()
     {
         Payment = PaymentService.GetById(PaymentId);
+    }
+
+    private async Task SuccessPayment()
+    {
+        var response = await Http.PostAsync(
+            $"api/payment/{PaymentId}/success",
+            null);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo($"/payment-result/{PaymentId}");
+        }
+    }
+
+    private async Task FailedPayment()
+    {
+        var response = await Http.PostAsync(
+            $"api/payment/{PaymentId}/failed",
+            null);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo($"/payment-result/{PaymentId}");
+        }
+    }
+
+    private async Task CancelPayment()
+    {
+        var response = await Http.PostAsync(
+            requestUri: $"api/payment/{PaymentId}/cancel",
+            null);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo($"/payment-result/{PaymentId}");
+        }
     }
 }

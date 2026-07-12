@@ -1,0 +1,80 @@
+@page "/payment-result/{PaymentId:guid}"
+
+@using PaymentTestGateway.Application.Interfaces
+@using PaymentTestGateway.Domain.Entities
+@using PaymentTestGateway.Domain.Enums
+
+@inject IPaymentService PaymentService
+
+<PageTitle>Payment Result</PageTitle>
+
+@if (Payment is null)
+{
+    <div class="alert alert-danger">
+        Payment not found.
+    </div>
+}
+else
+{
+    <div class="result-container">
+
+        <div class="result-card">
+
+            @switch (Payment.Status)
+            {
+                case PaymentStatus.Successful:
+
+                    <h1 class="text-success">✔ Payment Successful</h1>
+
+                    break;
+
+                case PaymentStatus.Failed:
+
+                    <h1 class="text-danger">✖ Payment Failed</h1>
+
+                    break;
+
+                case PaymentStatus.Cancelled:
+
+                    <h1 class="text-secondary">Payment Cancelled</h1>
+
+                    break;
+
+                default:
+
+                    <h1>Pending Payment</h1>
+
+                    break;
+            }
+
+            <hr />
+
+            <p><strong>Payment Id</strong></p>
+
+            <p>@Payment.Id</p>
+
+            <p><strong>Amount</strong></p>
+
+            <p>$@Payment.Amount.ToString("N2")</p>
+
+            <p><strong>Description</strong></p>
+
+            <p>@Payment.Description</p>
+
+        </div>
+
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public Guid PaymentId { get; set; }
+
+    private PaymentTransaction? Payment;
+
+    protected override void OnInitialized()
+    {
+        Payment = PaymentService.GetById(PaymentId);
+    }
+}

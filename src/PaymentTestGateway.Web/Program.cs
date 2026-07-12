@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using PaymentTestGateway.Application.Interfaces;
 using PaymentTestGateway.Infrastructure.Services;
 using PaymentTestGateway.Web.Components;
@@ -9,7 +10,15 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped(sp =>
+{
+    var navigation = sp.GetRequiredService<NavigationManager>();
 
+    return new HttpClient
+    {
+        BaseAddress = new Uri(navigation.BaseUri)
+    };
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

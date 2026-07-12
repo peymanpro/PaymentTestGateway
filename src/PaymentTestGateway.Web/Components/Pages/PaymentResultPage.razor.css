@@ -1,0 +1,22 @@
+.result-container{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#f5f7fb;
+}
+
+.result-card{
+
+    width:500px;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:40px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+    text-align:center;
+}
