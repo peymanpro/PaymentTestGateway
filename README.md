@@ -1,125 +1,138 @@
 # PaymentTestGateway
 
-A lightweight, open-source payment gateway simulator built with **ASP.NET Core 8**, **Blazor Server**, and **Clean Architecture**.
+A lightweight **Payment Gateway Sandbox** built with **ASP.NET Core 8**, **Blazor Server**, and **Clean Architecture**.
 
-The project helps developers build and test payment flows locally without waiting for real bank APIs or external payment providers.
+The goal of this project is to provide a realistic payment gateway simulator that developers can integrate with during development and testing without requiring access to a real bank or payment service provider.
 
 ---
 
-## ✨ Features
+# Features
 
-### Payment API
+## Payment API
 
-- Create payment
-- Retrieve payment by ID
-- Update payment status
+- Create Payment
+- Update Payment Status
   - Successful
   - Failed
   - Cancelled
+- Verify Payment
 
-### Payment UI
+---
 
-- Payment page
-- Payment result page
-- Responsive UI
+## Payment UI
+
+- Payment Page
+- Payment Result Page
+- Callback Redirect
+- Responsive Layout
 - CSS Isolation
 
-### Development
-
-- Swagger UI
-- In-memory storage
-- No database required
-
 ---
 
-## 🏗 Architecture
+## Payment Lifecycle
 
 ```
-Presentation (Blazor + REST API)
-            │
-            ▼
 Application
-            │
-            ▼
-Domain
-            │
-            ▼
-Infrastructure
+      │
+      ▼
+Create Payment
+      │
+      ▼
+Redirect User
+      │
+      ▼
+Payment Gateway
+      │
+      ▼
+User Action
+      │
+      ├──────── Success
+      ├──────── Failed
+      └──────── Cancelled
+      │
+      ▼
+Redirect To Callback
+      │
+      ▼
+Verify Payment
 ```
 
 ---
 
-## 📂 Project Structure
+# Current Capabilities
+
+- Clean Architecture
+- REST API
+- Blazor Server UI
+- Swagger
+- In-Memory Storage
+- Callback Support
+- Payment Verification
+- Reference Number Generation
+- Payment Timestamp
+- Payment Status Management
+
+---
+
+# Project Structure
 
 ```
 PaymentTestGateway
 │
 ├── src
 │   ├── PaymentTestGateway.Web
+│   │
 │   ├── PaymentTestGateway.Application
+│   │
 │   ├── PaymentTestGateway.Domain
+│   │
 │   └── PaymentTestGateway.Infrastructure
 │
 ├── docs
+│
 ├── samples
+│
 └── assets
 ```
 
 ---
 
-## 🚀 Getting Started
-
-Clone the repository
-
-```bash
-git clone https://github.com/peymanpro/PaymentTestGateway.git
-```
-
-Go to the project
-
-```bash
-cd PaymentTestGateway
-```
-
-Run the application
-
-```bash
-dotnet run --project src/PaymentTestGateway.Web
-```
-
-Open your browser
+# Architecture
 
 ```
-http://localhost:5031
-```
-
-Swagger
-
-```
-http://localhost:5031/swagger
+Presentation
+     │
+     ▼
+Application
+     │
+     ▼
+Domain
+     │
+     ▼
+Infrastructure
 ```
 
 ---
 
-## 📖 API
+# API
 
-### Create Payment
+## Create Payment
 
 ```
 POST /api/payment/create
 ```
 
-Example Request
+Request
 
 ```json
 {
   "amount": 400,
   "description": "Test Payment",
-  "callbackUrl": "https://localhost/callback"
+  "callbackUrl": "https://your-app.com/payment/callback"
 }
 ```
 
-Example Response
+Response
 
 ```json
 {
@@ -130,21 +143,21 @@ Example Response
 
 ---
 
-### Update Payment Status
+## Update Payment Status
 
-Successful
+### Success
 
 ```
 POST /api/payment/{paymentId}/success
 ```
 
-Failed
+### Failed
 
 ```
 POST /api/payment/{paymentId}/failed
 ```
 
-Cancelled
+### Cancelled
 
 ```
 POST /api/payment/{paymentId}/cancel
@@ -152,9 +165,38 @@ POST /api/payment/{paymentId}/cancel
 
 ---
 
-## 🖥 User Interface
+## Verify Payment
 
-### Payment Page
+```
+POST /api/payment/verify
+```
+
+Request
+
+```json
+{
+  "paymentId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+```
+
+Successful Response
+
+```json
+{
+  "paymentId": "...",
+  "status": 1,
+  "amount": 400,
+  "referenceNumber": "204988438307",
+  "paidAt": "2026-07-13T12:20:00Z",
+  "isSuccessful": true
+}
+```
+
+---
+
+# User Interface
+
+## Payment Page
 
 ```
 /pay/{paymentId}
@@ -162,14 +204,19 @@ POST /api/payment/{paymentId}/cancel
 
 Displays
 
-- Payment ID
+- Payment Id
 - Amount
 - Description
-- Payment actions
+
+Actions
+
+- Successful Payment
+- Failed Payment
+- Cancel Payment
 
 ---
 
-### Payment Result Page
+## Payment Result
 
 ```
 /payment-result/{paymentId}
@@ -177,69 +224,161 @@ Displays
 
 Displays
 
-- Pending
-- Successful
-- Failed
-- Cancelled
+- Current Status
+- Payment Id
+- Amount
+- Description
+- Return To Application
 
 ---
 
-## 📌 Current Status
+# Getting Started
 
-### Completed
+Clone repository
+
+```bash
+git clone https://github.com/peymanpro/PaymentTestGateway.git
+```
+
+Go to project
+
+```bash
+cd PaymentTestGateway
+```
+
+Run application
+
+```bash
+dotnet run --project src/PaymentTestGateway.Web
+```
+
+Swagger
+
+```
+http://localhost:5031/swagger
+```
+
+---
+
+# Current Version
+
+**v1.0.0**
+
+This version provides a complete MVP payment gateway simulation suitable for local development and integration testing.
+
+---
+
+# Roadmap
+
+## v1.1
+
+Business Rules
+
+- [ ] Prevent duplicate payment
+- [ ] Payment expiration
+- [ ] Better error codes
+- [ ] Idempotent payment operations
+
+---
+
+## v1.2
+
+Persistence
+
+- [ ] Entity Framework Core
+- [ ] PostgreSQL
+- [ ] Payment Repository
+- [ ] Migration Support
+
+---
+
+## v1.3
+
+Quality
+
+- [ ] Unit Tests
+- [ ] Integration Tests
+- [ ] GitHub Actions
+- [ ] Code Coverage
+
+---
+
+## v1.4
+
+Operations
+
+- [ ] Docker
+- [ ] Docker Compose
+- [ ] Health Checks
+- [ ] Structured Logging
+
+---
+
+## v2.0
+
+Advanced Gateway Features
+
+- [ ] Webhook Notifications
+- [ ] Merchant Management
+- [ ] JWT Authentication
+- [ ] Rate Limiting
+- [ ] OpenTelemetry
+- [ ] Metrics
+- [ ] Admin Dashboard
+
+---
+
+# Planned Ecosystem
+
+This project is planned to be used by other repositories in this portfolio.
+
+```
+Enterprise Portfolio
+
+PaymentTestGateway
+        ▲
+        │
+        │
+Enterprise Microservices Shop
+        │
+        ├── Identity Service
+        ├── Order Service
+        ├── Inventory Service
+        ├── Payment Service
+        └── Notification Service
+
+RabbitMQ Saga Demo
+
+GraphQL API
+
+ML.NET Recommendation Engine
+```
+
+---
+
+# Design Goals
 
 - Clean Architecture
-- Blazor Server UI
-- Payment domain model
-- Payment service
-- Create payment API
-- Payment status API
-- Payment page
-- Payment result page
-- Swagger integration
-- CSS Isolation
+- SOLID Principles
+- Enterprise-ready Design
+- Reusable Components
+- Simple Integration
+- Developer Friendly
 
 ---
 
-## 🛣 Roadmap
-
-- [x] Solution structure
-- [x] Domain layer
-- [x] Application layer
-- [x] Infrastructure layer
-- [x] Blazor Server UI
-- [x] Create payment
-- [x] Payment page
-- [x] Payment result page
-- [x] Payment status API
-
-Next milestones
-
-- [ ] Connect payment page actions
-- [ ] Callback endpoint
-- [ ] Payment verification
-- [ ] Payment expiration
-- [ ] Transaction reference number
-- [ ] Docker support
-- [ ] Unit tests
-- [ ] GitHub Actions
-
----
-
-## 📄 License
+# License
 
 MIT License
 
 ---
 
-## 🤝 Contributing
+# Contributing
 
-Contributions, issues and feature requests are welcome.
-
-Feel free to open an issue or submit a pull request.
+Issues, discussions, feature requests and pull requests are welcome.
 
 ---
 
-## ⭐ Support
+# Support
 
 If this project helps you, consider giving it a ⭐ on GitHub.
